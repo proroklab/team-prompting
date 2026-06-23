@@ -1,0 +1,487 @@
+{
+  "model": "llama-3.3-70b-versatile",
+  "episodes_per_dfa": 2,
+  "max_steps": 150,
+  "replan_every": 20,
+  "elapsed_s": 299.9,
+  "aggregate": {
+    "free_order": {
+      "n_episodes": 2,
+      "success_rate": 0.0,
+      "mean_steps": 150.0,
+      "mean_n_planner_calls": 7.0,
+      "mean_total_latency_s": 6.6935,
+      "mean_input_tokens_per_episode": 8299.0,
+      "mean_output_tokens_per_episode": 656.5,
+      "mean_cache_read_tokens_per_episode": 0.0
+    },
+    "constrained_a_first": {
+      "n_episodes": 2,
+      "success_rate": 0.0,
+      "mean_steps": 150.0,
+      "mean_n_planner_calls": 0.0,
+      "mean_total_latency_s": 0.0,
+      "mean_input_tokens_per_episode": 0.0,
+      "mean_output_tokens_per_episode": 0.0,
+      "mean_cache_read_tokens_per_episode": 0.0
+    },
+    "constrained_b_first": {
+      "n_episodes": 2,
+      "success_rate": 0.0,
+      "mean_steps": 150.0,
+      "mean_n_planner_calls": 0.0,
+      "mean_total_latency_s": 0.0,
+      "mean_input_tokens_per_episode": 0.0,
+      "mean_output_tokens_per_episode": 0.0,
+      "mean_cache_read_tokens_per_episode": 0.0
+    },
+    "heavy_strict_ab": {
+      "n_episodes": 2,
+      "success_rate": 0.0,
+      "mean_steps": 150.0,
+      "mean_n_planner_calls": 0.0,
+      "mean_total_latency_s": 0.0,
+      "mean_input_tokens_per_episode": 0.0,
+      "mean_output_tokens_per_episode": 0.0,
+      "mean_cache_read_tokens_per_episode": 0.0
+    },
+    "__overall__": {
+      "n_episodes": 8,
+      "success_rate": 0.0,
+      "mean_steps": 150.0,
+      "mean_n_planner_calls": 1.75,
+      "mean_total_latency_s": 1.673375,
+      "mean_input_tokens_per_episode": 2074.75,
+      "mean_output_tokens_per_episode": 164.125,
+      "mean_cache_read_tokens_per_episode": 0.0
+    }
+  },
+  "episodes": [
+    {
+      "summary": "We need to evacuate two casualties from the area. Free choice of order.",
+      "automaton_name": "free_order",
+      "success": false,
+      "n_steps": 150,
+      "final_joint_state": [
+        "found",
+        "found"
+      ],
+      "events_log": [
+        "step 33: event casualty_A_found",
+        "step 34: joint_state ('unfound', 'unfound') \u2192 ('found', 'unfound')",
+        "step 37: event casualty_B_found",
+        "step 38: joint_state ('found', 'unfound') \u2192 ('found', 'found')"
+      ],
+      "plan_log": [
+        {
+          "step": 0,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should navigate to the casualties to discover them. Agents 2 and 3 are carriers and should navigate to the stretcher to prepare for picking up the casualties.",
+          "latency_s": 0.491,
+          "input_tokens": 1152,
+          "output_tokens": 102
+        },
+        {
+          "step": 20,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should navigate to the casualties to discover them. Agents 2 and 3 are carriers and should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 0.426,
+          "input_tokens": 1153,
+          "output_tokens": 102
+        },
+        {
+          "step": 34,
+          "joint_state": [
+            "found",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should try to find casualty B, while agents 2 and 3 move towards the stretcher to prepare for potential pickup.",
+          "latency_s": 0.419,
+          "input_tokens": 1159,
+          "output_tokens": 92
+        },
+        {
+          "step": 38,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts have found the casualties, now the carriers and scouts need to navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 0.521,
+          "input_tokens": 1193,
+          "output_tokens": 85
+        },
+        {
+          "step": 58,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should navigate to their respective casualties to ensure they are found, while agents 2 and 3 should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 0.372,
+          "input_tokens": 1215,
+          "output_tokens": 97
+        },
+        {
+          "step": 78,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should navigate to their respective casualties to ensure they are found, while agents 2 and 3 should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 0.501,
+          "input_tokens": 1215,
+          "output_tokens": 97
+        },
+        {
+          "step": 98,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts have found the casualties, now they should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 0.362,
+          "input_tokens": 1213,
+          "output_tokens": 78
+        },
+        {
+          "step": 118,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should navigate to their respective casualties to ensure they are found, while agents 2 and 3 should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 0.411,
+          "input_tokens": 1215,
+          "output_tokens": 97
+        },
+        {
+          "step": 138,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should navigate to their respective casualties to ensure they are found, while agents 2 and 3 should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 0.359,
+          "input_tokens": 1214,
+          "output_tokens": 97
+        }
+      ],
+      "planner_stats": {
+        "n_calls": 9,
+        "total_latency_s": 3.861,
+        "mean_latency_s": 0.429,
+        "total_input_tokens": 10729,
+        "total_output_tokens": 847,
+        "total_cache_read_tokens": 0,
+        "failures": 0
+      },
+      "failure_reason": "timeout"
+    },
+    {
+      "summary": "Find both casualties and deliver them to the medical bays \u2014 order does not matter.",
+      "automaton_name": "free_order",
+      "success": false,
+      "n_steps": 150,
+      "final_joint_state": [
+        "found",
+        "found"
+      ],
+      "events_log": [
+        "step 6: event casualty_A_found",
+        "step 7: joint_state ('unfound', 'unfound') \u2192 ('found', 'unfound')",
+        "step 56: event casualty_B_found",
+        "step 57: joint_state ('found', 'unfound') \u2192 ('found', 'found')"
+      ],
+      "plan_log": [
+        {
+          "step": 0,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should navigate to the casualties to discover them. Agents 2 and 3 are carriers and should navigate to the stretcher to prepare for potential pickup.",
+          "latency_s": 0.447,
+          "input_tokens": 1154,
+          "output_tokens": 100
+        },
+        {
+          "step": 7,
+          "joint_state": [
+            "found",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should try to find casualty B, while agents 2 and 3 move to the stretcher to prepare for potential pickup.",
+          "latency_s": 0.43,
+          "input_tokens": 1160,
+          "output_tokens": 92
+        },
+        {
+          "step": 27,
+          "joint_state": [
+            "found",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should try to find casualty B, while agents 2 and 3 move to the stretcher to prepare for potential pickup.",
+          "latency_s": 0.388,
+          "input_tokens": 1183,
+          "output_tokens": 92
+        },
+        {
+          "step": 47,
+          "joint_state": [
+            "found",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should try to find casualty B, while agents 2 and 3 should move to the stretcher to prepare for potential pickup.",
+          "latency_s": 2.541,
+          "input_tokens": 1181,
+          "output_tokens": 93
+        },
+        {
+          "step": 57,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher and the scouts should move towards the casualties to prepare for pickup.",
+          "latency_s": 5.721,
+          "input_tokens": 1191,
+          "output_tokens": 89
+        }
+      ],
+      "planner_stats": {
+        "n_calls": 5,
+        "total_latency_s": 9.526,
+        "mean_latency_s": 1.905,
+        "total_input_tokens": 5869,
+        "total_output_tokens": 466,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 77: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99408, Requested 1318. Please try again in 10m27.264s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Rescue the red casualty first; only after they are at the green bay should you go for the orange one.",
+      "automaton_name": "constrained_a_first",
+      "success": false,
+      "n_steps": 150,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99364, Requested 1253. Please try again in 8m53.087999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Order: red, then orange. Both must be delivered.",
+      "automaton_name": "constrained_a_first",
+      "success": false,
+      "n_steps": 150,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99320, Requested 1246. Please try again in 8m9.024s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Locate both victims, but the orange one must reach a bay before the red one is moved.",
+      "automaton_name": "constrained_b_first",
+      "success": false,
+      "n_steps": 150,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99277, Requested 1254. Please try again in 7m38.784s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "The orange casualty is more urgent. Rescue them first; the red one comes after.",
+      "automaton_name": "constrained_b_first",
+      "success": false,
+      "n_steps": 150,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99233, Requested 1256. Please try again in 7m2.496s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "The red casualty needs all hands. Once delivered, the team can switch to orange.",
+      "automaton_name": "heavy_strict_ab",
+      "success": false,
+      "n_steps": 150,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99189, Requested 1257. Please try again in 6m25.344s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "The red one is critical. Get them out before scouting for the orange casualty.",
+      "automaton_name": "heavy_strict_ab",
+      "success": false,
+      "n_steps": 150,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99146, Requested 1248. Please try again in 5m40.416s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    }
+  ]
+}

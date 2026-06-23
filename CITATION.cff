@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the following paper."
+title: "Prompting Robot Teams with Natural Language"
+authors:
+  - family-names: Sebastián
+    given-names: Eduardo
+  - family-names: Pfitzer
+    given-names: Nicolas
+  - family-names: Shankar
+    given-names: Ajay
+  - family-names: Prorok
+    given-names: Amanda
+preferred-citation:
+  type: article
+  title: "Prompting Robot Teams with Natural Language"
+  authors:
+    - family-names: Sebastián
+      given-names: Eduardo
+    - family-names: Pfitzer
+      given-names: Nicolas
+    - family-names: Shankar
+      given-names: Ajay
+    - family-names: Prorok
+      given-names: Amanda
+  journal: "IEEE Robotics and Automation Letters"
+  year: 2026
+url: "https://sites.google.com/view/prompting-teams"

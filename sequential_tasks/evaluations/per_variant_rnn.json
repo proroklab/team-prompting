@@ -1,0 +1,526 @@
+{
+  "checkpoint": "trainers/experiments/_ours_rnn_5M/checkpoints/checkpoint_12000000.pt",
+  "config_name": "config_search_rescue_rl",
+  "episodes_per_variant": 20,
+  "max_steps": 800,
+  "elapsed_s": 22.6,
+  "aggregate": {
+    "free_order": {
+      "n_episodes": 20,
+      "success_rate": 1.0,
+      "mean_total_reward": 113.68646230697632,
+      "mean_episode_length": 224.3,
+      "median_episode_length": 215
+    },
+    "constrained_a_first": {
+      "n_episodes": 20,
+      "success_rate": 1.0,
+      "mean_total_reward": 53.36964807063341,
+      "mean_episode_length": 529.05,
+      "median_episode_length": 800
+    },
+    "constrained_b_first": {
+      "n_episodes": 20,
+      "success_rate": 1.0,
+      "mean_total_reward": 135.17237281799316,
+      "mean_episode_length": 238.3,
+      "median_episode_length": 277
+    },
+    "heavy_strict_ab": {
+      "n_episodes": 20,
+      "success_rate": 1.0,
+      "mean_total_reward": 101.22938585281372,
+      "mean_episode_length": 272.1,
+      "median_episode_length": 252
+    },
+    "__overall__": {
+      "n_episodes": 80,
+      "success_rate": 1.0,
+      "mean_total_reward": 100.86446726210416,
+      "mean_episode_length": 315.9375,
+      "median_episode_length": 262
+    }
+  },
+  "episodes": [
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 250,
+      "total_reward_mean_over_agents": 162.24893188476562
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 261,
+      "total_reward_mean_over_agents": 132.27459716796875
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 281,
+      "total_reward_mean_over_agents": 155.43038940429688
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 99,
+      "total_reward_mean_over_agents": 96.47193145751953
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 168,
+      "total_reward_mean_over_agents": 108.01939392089844
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 123,
+      "total_reward_mean_over_agents": 112.47727966308594
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 143,
+      "total_reward_mean_over_agents": 114.40933227539062
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 193,
+      "total_reward_mean_over_agents": 137.05270385742188
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 147,
+      "total_reward_mean_over_agents": 85.44143676757812
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 124,
+      "total_reward_mean_over_agents": 113.50547790527344
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 263,
+      "total_reward_mean_over_agents": 166.78195190429688
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 58,
+      "total_reward_mean_over_agents": 101.01346588134766
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 30.865812301635742
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 418,
+      "total_reward_mean_over_agents": 133.59999084472656
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 215,
+      "total_reward_mean_over_agents": 104.46434783935547
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 276,
+      "total_reward_mean_over_agents": 152.062744140625
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 277,
+      "total_reward_mean_over_agents": 90.61871337890625
+    },
+    {
+      "variant": "free_order",
+      "success": true,
+      "episode_length": 388,
+      "total_reward_mean_over_agents": 126.9907455444336
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 299,
+      "total_reward_mean_over_agents": 124.3863525390625
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 15.040397644042969
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 385,
+      "total_reward_mean_over_agents": 132.0628662109375
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": -52.639583587646484
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 120,
+      "total_reward_mean_over_agents": 96.2259750366211
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 229,
+      "total_reward_mean_over_agents": 150.36415100097656
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": -17.759937286376953
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 211,
+      "total_reward_mean_over_agents": 159.54617309570312
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": -0.17080649733543396
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 306,
+      "total_reward_mean_over_agents": 142.34622192382812
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 6.957494735717773
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 34.481014251708984
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 229,
+      "total_reward_mean_over_agents": 76.46128845214844
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 11.070006370544434
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 15.663644790649414
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 9.30610466003418
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 8.972440719604492
+    },
+    {
+      "variant": "constrained_a_first",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 5.07915735244751
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 125,
+      "total_reward_mean_over_agents": 111.72557830810547
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 425,
+      "total_reward_mean_over_agents": 141.00473022460938
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 208,
+      "total_reward_mean_over_agents": 155.34786987304688
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 308,
+      "total_reward_mean_over_agents": 148.4510498046875
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 101,
+      "total_reward_mean_over_agents": 113.218994140625
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 305,
+      "total_reward_mean_over_agents": 149.51065063476562
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 306,
+      "total_reward_mean_over_agents": 157.71395874023438
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 241,
+      "total_reward_mean_over_agents": 152.97235107421875
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 323,
+      "total_reward_mean_over_agents": 143.92230224609375
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 243,
+      "total_reward_mean_over_agents": 155.0792999267578
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 419,
+      "total_reward_mean_over_agents": 140.06658935546875
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 236,
+      "total_reward_mean_over_agents": 152.41586303710938
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 276,
+      "total_reward_mean_over_agents": 153.57977294921875
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 277,
+      "total_reward_mean_over_agents": 154.2374267578125
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 294,
+      "total_reward_mean_over_agents": 157.0224609375
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 354,
+      "total_reward_mean_over_agents": 145.70751953125
+    },
+    {
+      "variant": "constrained_b_first",
+      "success": true,
+      "episode_length": 322,
+      "total_reward_mean_over_agents": 146.47103881835938
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 12.622701644897461
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 262,
+      "total_reward_mean_over_agents": 156.94789123535156
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": 18.736804962158203
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 218,
+      "total_reward_mean_over_agents": 110.88914489746094
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 800,
+      "total_reward_mean_over_agents": -61.329750061035156
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 252,
+      "total_reward_mean_over_agents": 159.81167602539062
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 208,
+      "total_reward_mean_over_agents": 144.56446838378906
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 136,
+      "total_reward_mean_over_agents": 89.8603515625
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 260,
+      "total_reward_mean_over_agents": 154.4047393798828
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 262,
+      "total_reward_mean_over_agents": 156.06300354003906
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 270,
+      "total_reward_mean_over_agents": 127.62297058105469
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 189,
+      "total_reward_mean_over_agents": 141.83485412597656
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 1,
+      "total_reward_mean_over_agents": 75.0
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 180,
+      "total_reward_mean_over_agents": 118.41175079345703
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 267,
+      "total_reward_mean_over_agents": 155.28765869140625
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 221,
+      "total_reward_mean_over_agents": 113.320556640625
+    },
+    {
+      "variant": "heavy_strict_ab",
+      "success": true,
+      "episode_length": 313,
+      "total_reward_mean_over_agents": 125.53889465332031
+    }
+  ]
+}

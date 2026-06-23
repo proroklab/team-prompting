@@ -1,0 +1,10 @@
+# @package _global_
+defaults:
+  - /search_rescue/experiment/experiment
+  - /search_rescue/model/shared_gnn
+  - /search_rescue/model/actor
+  - /search_rescue/model/critic
+  - /search_rescue/task/search_rescue_slm_rl
+  - /search_rescue/algorithm/mappo
+
+seed: 1

@@ -1,0 +1,63 @@
+name: PASSAGE
+scenario_class: scenarios.search_rescue.search_rescue_scenario_latmos.SearchRescueScenarioLATMOS
+
+params:
+  # === Map & Layout ===
+  x_semidim: 4.0
+  y_semidim: 3.0
+  shared_reward: False
+
+  # === Team composition ===
+  n_scouts: 2
+  n_carriers: 2
+  agent_radius: 0.17
+  casualty_radius: 0.20
+  stretcher_radius: 0.30
+  bay_radius: 0.40
+  min_casualty_separation: 1.0
+
+  # === Detection / docking thresholds ===
+  detect_radius: 0.45
+  dock_radius: 0.55
+  pickup_radius: 0.55
+
+  # === Rewards (re-tuned after first run collapsed) ===
+  shaping_factor_carrier: 30.0
+  shaping_factor_scout: 15.0
+  r_discover: 10.0
+  r_load: 30.0
+  r_deliver: 60.0
+  r_sync_step: 0.05
+  r_terminal: 300.0
+  collision_penalty: 5.0
+
+  # === Dynamics ===
+  use_velocity_controller: True
+  agent_weight: 1.0
+  agent_v_range: 1.0
+  agent_a_range: 1.0
+  min_collision_distance: 0.1
+  linear_friction: 0.1
+
+  # === Communication / GNN ===
+  comm_dim: 1
+  comms_radius: ${search_rescue.model.actor_model.edge_radius}
+
+  # === Language (kept identical for fair comparison; LATMOS ignores task summary) ===
+  embedding_size: 1024
+  use_embedding_ratio: 1.0
+  event_dim: 7
+  state_dim: 10
+  num_automata_bits: 2
+  load_dataset: True
+
+  # === Paths ===
+  data_json_path: "sequence_models/data/search_rescue/dataset_search_rescue_ALL.json"
+  sequence_model_path: "sequence_models/search_rescue/search_rescue.pth"  # unused but kept for compat
+  latmos_model_path: "sequence_models/search_rescue/latmos.pth"
+  policy_config_path: "../../conf"
+  policy_config_name: "config.yaml"
+  policy_restore_path: "checkpoints/search_rescue_latmos/policy.pt"
+
+  # === Episode ===
+  max_steps: 800

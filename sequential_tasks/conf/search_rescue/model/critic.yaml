@@ -1,0 +1,23 @@
+critic_model:
+  _target_: trainers.models.gnn_policy_model.MyModelConfig
+  topology: from_pos
+  edge_radius: ${..model_shared.comms_radius}
+  self_loops: false
+  gnn_class: torch_geometric.nn.conv.GATv2Conv
+  gnn_kwargs:
+    add_self_loops: true
+    residual: true
+
+  position_key: pos
+  pos_features: 2
+  velocity_key: vel
+  vel_features: 2
+  sentence_key: sentence_embedding
+  exclude_pos_from_node_features: false
+
+  num_cells: [512, 256]
+  layer_class: torch.nn.Linear
+  activation_class: torch.nn.ReLU
+
+  use_gnn: false
+  gnn_emb_dim: ${..model_shared.gnn_emb_dim}

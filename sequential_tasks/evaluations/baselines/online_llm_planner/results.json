@@ -1,0 +1,1811 @@
+{
+  "model": "llama-3.3-70b-versatile",
+  "episodes_per_dfa": 5,
+  "max_steps": 300,
+  "replan_every": 20,
+  "elapsed_s": 1040.7,
+  "aggregate": {
+    "free_order": {
+      "n_episodes": 5,
+      "success_rate": 0.0,
+      "mean_steps": 300.0,
+      "mean_n_planner_calls": 15.0,
+      "mean_total_latency_s": 82.70320000000001,
+      "mean_input_tokens_per_episode": 18059.6,
+      "mean_output_tokens_per_episode": 1395.4,
+      "mean_cache_read_tokens_per_episode": 0.0
+    },
+    "constrained_a_first": {
+      "n_episodes": 5,
+      "success_rate": 0.0,
+      "mean_steps": 300.0,
+      "mean_n_planner_calls": 0.0,
+      "mean_total_latency_s": 0.0,
+      "mean_input_tokens_per_episode": 0.0,
+      "mean_output_tokens_per_episode": 0.0,
+      "mean_cache_read_tokens_per_episode": 0.0
+    },
+    "constrained_b_first": {
+      "n_episodes": 5,
+      "success_rate": 0.0,
+      "mean_steps": 300.0,
+      "mean_n_planner_calls": 0.0,
+      "mean_total_latency_s": 0.0,
+      "mean_input_tokens_per_episode": 0.0,
+      "mean_output_tokens_per_episode": 0.0,
+      "mean_cache_read_tokens_per_episode": 0.0
+    },
+    "heavy_strict_ab": {
+      "n_episodes": 5,
+      "success_rate": 0.0,
+      "mean_steps": 300.0,
+      "mean_n_planner_calls": 0.0,
+      "mean_total_latency_s": 0.0,
+      "mean_input_tokens_per_episode": 0.0,
+      "mean_output_tokens_per_episode": 0.0,
+      "mean_cache_read_tokens_per_episode": 0.0
+    },
+    "__overall__": {
+      "n_episodes": 20,
+      "success_rate": 0.0,
+      "mean_steps": 300.0,
+      "mean_n_planner_calls": 3.75,
+      "mean_total_latency_s": 20.675800000000002,
+      "mean_input_tokens_per_episode": 4514.9,
+      "mean_output_tokens_per_episode": 348.85,
+      "mean_cache_read_tokens_per_episode": 0.0
+    }
+  },
+  "episodes": [
+    {
+      "summary": "We need to evacuate two casualties from the area. Free choice of order.",
+      "automaton_name": "free_order",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "found",
+        "found"
+      ],
+      "events_log": [
+        "step 23: event casualty_B_found",
+        "step 24: joint_state ('unfound', 'unfound') \u2192 ('unfound', 'found')",
+        "step 45: event casualty_A_found",
+        "step 46: joint_state ('unfound', 'found') \u2192 ('found', 'found')"
+      ],
+      "plan_log": [
+        {
+          "step": 0,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should navigate to the casualties to discover them. Agents 2 and 3 are carriers and should navigate to the stretcher to prepare for picking up the casualties.",
+          "latency_s": 0.557,
+          "input_tokens": 1152,
+          "output_tokens": 102
+        },
+        {
+          "step": 20,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should navigate to the casualties to discover them. Agents 2 and 3 are carriers and should navigate to the stretcher to prepare for picking up the casualties.",
+          "latency_s": 0.439,
+          "input_tokens": 1150,
+          "output_tokens": 103
+        },
+        {
+          "step": 24,
+          "joint_state": [
+            "unfound",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agent 0 and agent 1 should navigate to Casualty A to discover it, while agent 2 and agent 3 should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 0.47,
+          "input_tokens": 1156,
+          "output_tokens": 100
+        },
+        {
+          "step": 44,
+          "joint_state": [
+            "unfound",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agent 0 and agent 1 should navigate to casualty A to discover it, while agent 2 and agent 3 should navigate to the stretcher to prepare for potential pickup.",
+          "latency_s": 0.428,
+          "input_tokens": 1179,
+          "output_tokens": 98
+        },
+        {
+          "step": 46,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts have found the casualties, now they should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 0.419,
+          "input_tokens": 1190,
+          "output_tokens": 78
+        },
+        {
+          "step": 66,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts should navigate to their respective casualties to ensure they are found, while both carriers should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 0.535,
+          "input_tokens": 1213,
+          "output_tokens": 93
+        },
+        {
+          "step": 86,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts are navigating to their respective casualties to ensure they are found, while both carriers are moving to the stretcher to prepare for pickup.",
+          "latency_s": 0.563,
+          "input_tokens": 1211,
+          "output_tokens": 89
+        },
+        {
+          "step": 106,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts are close to a casualty and should move towards it, while both carriers should move towards the stretcher to prepare for pickup.",
+          "latency_s": 0.381,
+          "input_tokens": 1213,
+          "output_tokens": 88
+        },
+        {
+          "step": 126,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts have found the casualties, now they should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 0.437,
+          "input_tokens": 1213,
+          "output_tokens": 78
+        },
+        {
+          "step": 146,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts are navigating to their respective casualties to prepare for evacuation, while both carriers are moving to the stretcher to get ready to pick up a casualty.",
+          "latency_s": 0.419,
+          "input_tokens": 1212,
+          "output_tokens": 92
+        },
+        {
+          "step": 166,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts are navigating to their respective casualties to ensure they are found, while both carriers are moving to the stretcher to prepare for pickup.",
+          "latency_s": 0.526,
+          "input_tokens": 1210,
+          "output_tokens": 89
+        },
+        {
+          "step": 186,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts are navigating to their respective casualties to ensure they are found, while both carriers are navigating to the stretcher to prepare for pickup.",
+          "latency_s": 3.522,
+          "input_tokens": 1212,
+          "output_tokens": 90
+        },
+        {
+          "step": 206,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_A"
+          ],
+          "reasoning": "Both scouts should navigate to the stretcher, while the carriers should navigate to casualty A to prepare for pickup.",
+          "latency_s": 6.384,
+          "input_tokens": 1213,
+          "output_tokens": 83
+        },
+        {
+          "step": 226,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts should navigate to their respective casualties to ensure they are found, while both carriers should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 6.526,
+          "input_tokens": 1209,
+          "output_tokens": 90
+        },
+        {
+          "step": 246,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts are navigating to their respective casualties to ensure they are found, while both carriers are navigating to the stretcher to prepare for pickup.",
+          "latency_s": 6.49,
+          "input_tokens": 1207,
+          "output_tokens": 90
+        },
+        {
+          "step": 266,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_A"
+          ],
+          "reasoning": "Both scouts are navigating to the stretcher while the carriers are moving towards casualty A to prepare for pickup.",
+          "latency_s": 6.59,
+          "input_tokens": 1209,
+          "output_tokens": 82
+        },
+        {
+          "step": 286,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts should navigate to their respective casualties to ensure they are found, while both carriers should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 6.464,
+          "input_tokens": 1208,
+          "output_tokens": 90
+        }
+      ],
+      "planner_stats": {
+        "n_calls": 17,
+        "total_latency_s": 41.151,
+        "mean_latency_s": 2.421,
+        "total_input_tokens": 20357,
+        "total_output_tokens": 1535,
+        "total_cache_read_tokens": 0,
+        "failures": 0
+      },
+      "failure_reason": "timeout"
+    },
+    {
+      "summary": "Find both casualties and deliver them to the medical bays \u2014 order does not matter.",
+      "automaton_name": "free_order",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "found",
+        "found"
+      ],
+      "events_log": [
+        "step 37: event casualty_A_found",
+        "step 38: joint_state ('unfound', 'unfound') \u2192 ('found', 'unfound')",
+        "step 38: event casualty_B_found",
+        "step 39: joint_state ('found', 'unfound') \u2192 ('found', 'found')"
+      ],
+      "plan_log": [
+        {
+          "step": 0,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should navigate to the casualties to discover them. Agents 2 and 3 are carriers and should navigate to the stretcher to prepare for picking up the casualties.",
+          "latency_s": 5.449,
+          "input_tokens": 1151,
+          "output_tokens": 102
+        },
+        {
+          "step": 20,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should try to find the casualties, while agents 2 and 3 are carriers and should move to the stretcher to prepare for potential pickup.",
+          "latency_s": 6.459,
+          "input_tokens": 1155,
+          "output_tokens": 99
+        },
+        {
+          "step": 38,
+          "joint_state": [
+            "found",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should try to find casualty B, while agents 2 and 3 move towards the stretcher to prepare for potential pickup.",
+          "latency_s": 6.45,
+          "input_tokens": 1162,
+          "output_tokens": 93
+        },
+        {
+          "step": 39,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher to prepare for picking up a casualty, while the scouts can navigate to the casualties to be ready for potential future tasks.",
+          "latency_s": 6.645,
+          "input_tokens": 1196,
+          "output_tokens": 99
+        },
+        {
+          "step": 59,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts have found the casualties, now all agents should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 6.406,
+          "input_tokens": 1216,
+          "output_tokens": 81
+        },
+        {
+          "step": 79,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts should navigate to their respective casualties to ensure they are found, while both carriers should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 6.402,
+          "input_tokens": 1218,
+          "output_tokens": 92
+        },
+        {
+          "step": 99,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher to prepare for pickup, while scouts can move closer to the casualties to ensure they are not lost.",
+          "latency_s": 6.455,
+          "input_tokens": 1218,
+          "output_tokens": 95
+        },
+        {
+          "step": 119,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now both scouts and carriers should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 6.521,
+          "input_tokens": 1218,
+          "output_tokens": 82
+        },
+        {
+          "step": 139,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts should navigate to their respective casualties to ensure they are found, while both carriers should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 6.464,
+          "input_tokens": 1217,
+          "output_tokens": 92
+        },
+        {
+          "step": 159,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher and the scouts should move to the casualties to prepare for pickup.",
+          "latency_s": 6.44,
+          "input_tokens": 1218,
+          "output_tokens": 88
+        },
+        {
+          "step": 179,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher to prepare for picking up a casualty, while the scouts can navigate to the casualties to be ready for potential further instructions.",
+          "latency_s": 6.52,
+          "input_tokens": 1217,
+          "output_tokens": 99
+        },
+        {
+          "step": 199,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher to prepare for picking up a casualty, while the scouts can move closer to the casualties.",
+          "latency_s": 6.563,
+          "input_tokens": 1218,
+          "output_tokens": 93
+        },
+        {
+          "step": 219,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts have found the casualties, now all agents should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 6.429,
+          "input_tokens": 1219,
+          "output_tokens": 81
+        },
+        {
+          "step": 239,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher to prepare for picking up a casualty, while the scouts move towards the casualties to be ready to guide the stretcher.",
+          "latency_s": 7.024,
+          "input_tokens": 1217,
+          "output_tokens": 99
+        },
+        {
+          "step": 259,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the scouts should navigate to their respective casualties while the carriers navigate to the stretcher to prepare for pickup.",
+          "latency_s": 5.503,
+          "input_tokens": 1218,
+          "output_tokens": 88
+        },
+        {
+          "step": 279,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher to prepare for picking up a casualty, while the scouts can move closer to the casualties.",
+          "latency_s": 6.501,
+          "input_tokens": 1217,
+          "output_tokens": 93
+        },
+        {
+          "step": 299,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher to prepare for pickup.",
+          "latency_s": 6.42,
+          "input_tokens": 1217,
+          "output_tokens": 81
+        }
+      ],
+      "planner_stats": {
+        "n_calls": 17,
+        "total_latency_s": 108.652,
+        "mean_latency_s": 6.391,
+        "total_input_tokens": 20492,
+        "total_output_tokens": 1557,
+        "total_cache_read_tokens": 0,
+        "failures": 0
+      },
+      "failure_reason": "timeout"
+    },
+    {
+      "summary": "There are two casualties in the area. Find both and bring each one to a medical bay.",
+      "automaton_name": "free_order",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "delivered",
+        "found"
+      ],
+      "events_log": [
+        "step 14: event casualty_A_found",
+        "step 15: joint_state ('unfound', 'unfound') \u2192 ('found', 'unfound')",
+        "step 49: event casualty_B_found",
+        "step 50: joint_state ('found', 'unfound') \u2192 ('found', 'found')",
+        "step 156: event stretcher_loaded_A",
+        "step 157: joint_state ('found', 'found') \u2192 ('loaded', 'found')",
+        "step 207: event delivered_A",
+        "step 208: joint_state ('loaded', 'found') \u2192 ('delivered', 'found')"
+      ],
+      "plan_log": [
+        {
+          "step": 0,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should navigate to the nearest casualty to discover them. Agents 2 and 3 are carriers and should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 6.483,
+          "input_tokens": 1155,
+          "output_tokens": 103
+        },
+        {
+          "step": 15,
+          "joint_state": [
+            "found",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agent 0 and agent 1 should try to find casualty B, while agent 2 and agent 3 move towards the stretcher to prepare for potential pickup.",
+          "latency_s": 6.425,
+          "input_tokens": 1162,
+          "output_tokens": 94
+        },
+        {
+          "step": 35,
+          "joint_state": [
+            "found",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 should try to find casualty B, while agents 2 and 3 move to the stretcher to prepare for potential pickup.",
+          "latency_s": 6.438,
+          "input_tokens": 1184,
+          "output_tokens": 92
+        },
+        {
+          "step": 50,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts should navigate to their respective casualties to ensure they are found, and both carriers should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 6.476,
+          "input_tokens": 1195,
+          "output_tokens": 92
+        },
+        {
+          "step": 70,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties have been found, now the carriers should move to the stretcher to prepare for picking up a casualty, while the scouts move towards the casualties to ensure they are still found.",
+          "latency_s": 6.48,
+          "input_tokens": 1219,
+          "output_tokens": 98
+        },
+        {
+          "step": 90,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties have been found, now the carriers should move to the stretcher to prepare for picking up a casualty, while the scouts move towards the casualties to ensure they are still found.",
+          "latency_s": 6.493,
+          "input_tokens": 1218,
+          "output_tokens": 98
+        },
+        {
+          "step": 110,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties have been found, now the carriers should move to the stretcher and the scouts should move to the casualties to prepare for pickup.",
+          "latency_s": 6.497,
+          "input_tokens": 1218,
+          "output_tokens": 89
+        },
+        {
+          "step": 130,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_A"
+          ],
+          "reasoning": "Both scouts have found the casualties, now they should navigate to the stretcher while the carriers move towards casualty A to prepare for pickup.",
+          "latency_s": 6.526,
+          "input_tokens": 1218,
+          "output_tokens": 88
+        },
+        {
+          "step": 150,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_A"
+          ],
+          "reasoning": "Both scouts have found the casualties, now they should navigate to the stretcher while the carriers navigate to casualty A to prepare for pickup.",
+          "latency_s": 6.438,
+          "input_tokens": 1218,
+          "output_tokens": 88
+        },
+        {
+          "step": 157,
+          "joint_state": [
+            "loaded",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_bay_A",
+            "navigate_to_casualty_B",
+            "navigate_to_bay_A",
+            "navigate_to_bay_A"
+          ],
+          "reasoning": "Since Casualty A is loaded, the carriers should move the stretcher to Bay A, while agent_1 checks on Casualty B.",
+          "latency_s": 6.464,
+          "input_tokens": 1229,
+          "output_tokens": 87
+        },
+        {
+          "step": 177,
+          "joint_state": [
+            "loaded",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_bay_A",
+            "navigate_to_casualty_B",
+            "navigate_to_bay_A",
+            "navigate_to_bay_A"
+          ],
+          "reasoning": "Since Casualty A is loaded, the carriers and one scout should move the stretcher to Bay A, while the other scout moves to Casualty B to prepare for the next pickup.",
+          "latency_s": 6.498,
+          "input_tokens": 1234,
+          "output_tokens": 96
+        },
+        {
+          "step": 197,
+          "joint_state": [
+            "loaded",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_bay_A",
+            "navigate_to_casualty_B",
+            "navigate_to_bay_A",
+            "navigate_to_bay_A"
+          ],
+          "reasoning": "Since Casualty A is loaded, the carriers and one scout should navigate to Bay A to deliver Casualty A, while the other scout navigates to Casualty B to prepare for the next pickup.",
+          "latency_s": 6.57,
+          "input_tokens": 1234,
+          "output_tokens": 99
+        },
+        {
+          "step": 208,
+          "joint_state": [
+            "delivered",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "idle",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Since Casualty A has been delivered, the next step is to focus on Casualty B. Agent 0 should navigate to Casualty B to ensure it is found and ready for pickup. Agents 2 and 3 should navigate to the stretcher to prepare for loading Casualty B.",
+          "latency_s": 6.523,
+          "input_tokens": 1221,
+          "output_tokens": 113
+        },
+        {
+          "step": 228,
+          "joint_state": [
+            "delivered",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "idle",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Since Casualty A has been delivered, the next step is to focus on Casualty B. Agent 0 should navigate to Casualty B to ensure it is found and ready for pickup. Agents 2 and 3 should navigate to the stretcher to prepare for loading Casualty B.",
+          "latency_s": 6.536,
+          "input_tokens": 1233,
+          "output_tokens": 113
+        },
+        {
+          "step": 248,
+          "joint_state": [
+            "delivered",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "idle",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Since Casualty A has been delivered, the next step is to focus on Casualty B. Agent 0 will navigate to Casualty B to ensure it is found and ready for pickup. Agents 2 and 3 will navigate to the stretcher to prepare for loading Casualty B.",
+          "latency_s": 6.506,
+          "input_tokens": 1233,
+          "output_tokens": 113
+        },
+        {
+          "step": 268,
+          "joint_state": [
+            "delivered",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B"
+          ],
+          "reasoning": "Casualty A has been delivered, now all agents should focus on Casualty B.",
+          "latency_s": 6.517,
+          "input_tokens": 1232,
+          "output_tokens": 84
+        },
+        {
+          "step": 288,
+          "joint_state": [
+            "delivered",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_bay_B",
+            "navigate_to_bay_B",
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_B"
+          ],
+          "reasoning": "Casualty A has been delivered, now focus on Casualty B. Both scouts should navigate to Bay B to prepare for the delivery of Casualty B, while both carriers should navigate to Casualty B to pick it up.",
+          "latency_s": 6.572,
+          "input_tokens": 1234,
+          "output_tokens": 107
+        }
+      ],
+      "planner_stats": {
+        "n_calls": 17,
+        "total_latency_s": 110.442,
+        "mean_latency_s": 6.497,
+        "total_input_tokens": 20637,
+        "total_output_tokens": 1654,
+        "total_cache_read_tokens": 0,
+        "failures": 0
+      },
+      "failure_reason": "timeout"
+    },
+    {
+      "summary": "Two casualties are inside. Find both and transport them to the medical zones.",
+      "automaton_name": "free_order",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "found",
+        "found"
+      ],
+      "events_log": [
+        "step 25: event casualty_B_found",
+        "step 26: joint_state ('unfound', 'unfound') \u2192 ('unfound', 'found')",
+        "step 38: event casualty_A_found",
+        "step 39: joint_state ('unfound', 'found') \u2192 ('found', 'found')"
+      ],
+      "plan_log": [
+        {
+          "step": 0,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should navigate to the casualties to discover them. Agents 2 and 3 are carriers and should navigate to the stretcher to prepare for potential pickup.",
+          "latency_s": 6.597,
+          "input_tokens": 1153,
+          "output_tokens": 100
+        },
+        {
+          "step": 20,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should navigate to the casualties to discover them. Agents 2 and 3 are carriers and should navigate to the stretcher to prepare for potential pickup.",
+          "latency_s": 5.569,
+          "input_tokens": 1152,
+          "output_tokens": 100
+        },
+        {
+          "step": 26,
+          "joint_state": [
+            "unfound",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agent 0 and agent 1 should try to find Casualty A, while agent 2 and agent 3 should move towards the stretcher to prepare for potential pickup.",
+          "latency_s": 6.469,
+          "input_tokens": 1158,
+          "output_tokens": 96
+        },
+        {
+          "step": 39,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 2 and 3 should move to the stretcher to prepare for picking up a casualty, while agent 0 moves to casualty B and agent 1 also moves to the stretcher.",
+          "latency_s": 6.502,
+          "input_tokens": 1192,
+          "output_tokens": 99
+        },
+        {
+          "step": 59,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher and the scouts should move to the casualties to prepare for the next step.",
+          "latency_s": 6.65,
+          "input_tokens": 1212,
+          "output_tokens": 90
+        },
+        {
+          "step": 79,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the scouts should navigate to their respective casualties and the carriers should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 5.461,
+          "input_tokens": 1214,
+          "output_tokens": 90
+        },
+        {
+          "step": 99,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties have been found, now the carriers should move to the stretcher and the scouts should move to the casualties to prepare for transport.",
+          "latency_s": 7.509,
+          "input_tokens": 1214,
+          "output_tokens": 89
+        },
+        {
+          "step": 119,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher and the scouts should move to the casualties to prepare for pickup.",
+          "latency_s": 5.503,
+          "input_tokens": 1215,
+          "output_tokens": 88
+        },
+        {
+          "step": 139,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts should navigate to their respective casualties to prepare for transport, while both carriers should navigate to the stretcher to prepare for loading a casualty.",
+          "latency_s": 6.424,
+          "input_tokens": 1215,
+          "output_tokens": 91
+        },
+        {
+          "step": 159,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both scouts should navigate to their respective casualties to prepare for pickup, while both carriers should navigate to the stretcher to prepare for docking.",
+          "latency_s": 6.625,
+          "input_tokens": 1215,
+          "output_tokens": 88
+        },
+        {
+          "step": 179,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher and the scouts should move to the casualties to prepare for pickup.",
+          "latency_s": 6.513,
+          "input_tokens": 1215,
+          "output_tokens": 88
+        },
+        {
+          "step": 199,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher to prepare for picking up a casualty, while the scouts can move closer to the casualties to ensure they are in the correct position.",
+          "latency_s": 6.504,
+          "input_tokens": 1215,
+          "output_tokens": 101
+        },
+        {
+          "step": 219,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the scouts should navigate to their respective casualties while the carriers move to the stretcher to prepare for pickup.",
+          "latency_s": 6.539,
+          "input_tokens": 1214,
+          "output_tokens": 89
+        },
+        {
+          "step": 239,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the scouts should navigate to their respective casualties and the carriers should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 6.412,
+          "input_tokens": 1214,
+          "output_tokens": 90
+        },
+        {
+          "step": 259,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher and the scouts should move to the casualties to prepare for pickup.",
+          "latency_s": 6.599,
+          "input_tokens": 1214,
+          "output_tokens": 88
+        },
+        {
+          "step": 279,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the carriers should move to the stretcher to prepare for picking up a casualty, while the scouts can move closer to the casualties to ensure they are not lost.",
+          "latency_s": 6.471,
+          "input_tokens": 1214,
+          "output_tokens": 99
+        },
+        {
+          "step": 299,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_B",
+            "navigate_to_casualty_A",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, now the scouts should navigate to their respective casualties while the carriers move to the stretcher to prepare for pickup.",
+          "latency_s": 6.497,
+          "input_tokens": 1214,
+          "output_tokens": 88
+        }
+      ],
+      "planner_stats": {
+        "n_calls": 17,
+        "total_latency_s": 108.845,
+        "mean_latency_s": 6.403,
+        "total_input_tokens": 20440,
+        "total_output_tokens": 1574,
+        "total_cache_read_tokens": 0,
+        "failures": 0
+      },
+      "failure_reason": "timeout"
+    },
+    {
+      "summary": "Mission: locate the two victims and transport them to the bays. Pick whichever you find first.",
+      "automaton_name": "free_order",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "loaded",
+        "found"
+      ],
+      "events_log": [
+        "step 12: event casualty_A_found",
+        "step 13: joint_state ('unfound', 'unfound') \u2192 ('found', 'unfound')",
+        "step 19: event casualty_B_found",
+        "step 20: joint_state ('found', 'unfound') \u2192 ('found', 'found')",
+        "step 108: event stretcher_loaded_A"
+      ],
+      "plan_log": [
+        {
+          "step": 0,
+          "joint_state": [
+            "unfound",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agents 0 and 1 are scouts and should try to find the casualties, while agents 2 and 3 are carriers and should move to the stretcher to prepare for potential pickup.",
+          "latency_s": 6.478,
+          "input_tokens": 1154,
+          "output_tokens": 99
+        },
+        {
+          "step": 13,
+          "joint_state": [
+            "found",
+            "unfound"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Agent 0 and carriers (2 and 3) should head to the stretcher to prepare for casualty transport, while agent 1 searches for casualty B.",
+          "latency_s": 6.487,
+          "input_tokens": 1161,
+          "output_tokens": 91
+        },
+        {
+          "step": 20,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, agent_0 and agent_1 should navigate to their respective casualties, while agent_2 and agent_3 should navigate to the stretcher to prepare for pickup.",
+          "latency_s": 6.682,
+          "input_tokens": 1195,
+          "output_tokens": 99
+        },
+        {
+          "step": 40,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties have been found, now both scouts and carriers should navigate to the stretcher to prepare for picking up a casualty.",
+          "latency_s": 5.439,
+          "input_tokens": 1215,
+          "output_tokens": 82
+        },
+        {
+          "step": 60,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, agents should navigate to their respective casualties and carriers should move to the stretcher to prepare for pickup.",
+          "latency_s": 6.442,
+          "input_tokens": 1216,
+          "output_tokens": 87
+        },
+        {
+          "step": 80,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_stretcher",
+            "navigate_to_stretcher",
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_A"
+          ],
+          "reasoning": "Agents 0 and 1 should navigate to the stretcher to prepare for casualty transport, while agents 2 and 3 should navigate to casualty A to pick it up.",
+          "latency_s": 6.435,
+          "input_tokens": 1216,
+          "output_tokens": 96
+        },
+        {
+          "step": 100,
+          "joint_state": [
+            "found",
+            "found"
+          ],
+          "actions": [
+            "navigate_to_casualty_A",
+            "navigate_to_casualty_B",
+            "navigate_to_stretcher",
+            "navigate_to_stretcher"
+          ],
+          "reasoning": "Both casualties are found, agent_0 and agent_1 should navigate to their respective casualties to prepare for pickup, while agent_2 and agent_3 should navigate to the stretcher to prepare for loading.",
+          "latency_s": 6.463,
+          "input_tokens": 1215,
+          "output_tokens": 103
+        }
+      ],
+      "planner_stats": {
+        "n_calls": 7,
+        "total_latency_s": 44.426,
+        "mean_latency_s": 6.347,
+        "total_input_tokens": 8372,
+        "total_output_tokens": 657,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 109: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99339, Requested 1335. Please try again in 9m42.336s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "The red casualty is more urgent. Rescue them first; the orange one comes after.",
+      "automaton_name": "constrained_a_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99295, Requested 1249. Please try again in 7m50.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "The red casualty is more urgent. Rescue them first; the orange one comes after.",
+      "automaton_name": "constrained_a_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99251, Requested 1249. Please try again in 7m12s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Red victim first, then orange. Both must reach a medical bay.",
+      "automaton_name": "constrained_a_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99208, Requested 1247. Please try again in 6m33.12s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Order: red, then orange. Both must be delivered.",
+      "automaton_name": "constrained_a_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99164, Requested 1254. Please try again in 6m1.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Save the red casualty before the orange casualty.",
+      "automaton_name": "constrained_a_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99121, Requested 1241. Please try again in 5m12.768s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Two people need help; the orange one is more critical. Save them first.",
+      "automaton_name": "constrained_b_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99077, Requested 1261. Please try again in 4m52.032s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Order: orange, then red. Both must be delivered.",
+      "automaton_name": "constrained_b_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99033, Requested 1254. Please try again in 4m7.968s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "The orange victim takes precedence. Deliver them, then handle the red one.",
+      "automaton_name": "constrained_b_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98990, Requested 1247. Please try again in 3m24.768s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "There are two injured people. Do the orange one before the red one.",
+      "automaton_name": "constrained_b_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98946, Requested 1661. Please try again in 8m44.448s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Don't start the red evacuation until the orange casualty is delivered.",
+      "automaton_name": "constrained_b_first",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98903, Requested 1658. Please try again in 8m4.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Red victim must reach the green bay before any search for the orange begins.",
+      "automaton_name": "heavy_strict_ab",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98859, Requested 1661. Please try again in 7m29.28s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Two casualties, but the red one is in critical condition and must be evacuated first. Do not search for the orange one until the red is delivered.",
+      "automaton_name": "heavy_strict_ab",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98815, Requested 1674. Please try again in 7m2.496s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "The red casualty is heavy and critical \u2014 focus the entire team on them first. Only after they reach the green bay should you start searching for the orange one.",
+      "automaton_name": "heavy_strict_ab",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98772, Requested 1678. Please try again in 6m28.799999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Red is heavy. The whole team must commit to red first. Once delivered, then locate and evacuate orange.",
+      "automaton_name": "heavy_strict_ab",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98728, Requested 1670. Please try again in 5m43.872s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    },
+    {
+      "summary": "Strict sequential rescue: deliver the red casualty, then begin the orange one.",
+      "automaton_name": "heavy_strict_ab",
+      "success": false,
+      "n_steps": 300,
+      "final_joint_state": [
+        "unfound",
+        "unfound"
+      ],
+      "events_log": [],
+      "plan_log": [],
+      "planner_stats": {
+        "n_calls": 0,
+        "total_latency_s": 0.0,
+        "mean_latency_s": 0.0,
+        "total_input_tokens": 0,
+        "total_output_tokens": 0,
+        "total_cache_read_tokens": 0,
+        "failures": 1
+      },
+      "failure_reason": "planner failure at step 0: LLM planning failed after 5 attempts: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kqy5f87bekpr1cds9xjk8d4z` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 98684, Requested 1662. Please try again in 4m58.944s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    }
+  ]
+}

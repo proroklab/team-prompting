@@ -1,0 +1,813 @@
+import sys
+import csv
+import math
+import signal
+from pathlib import Path
+from datetime import datetime
+from typing import List, Optional
+
+import torch
+from torchrl.envs.utils import ExplorationType, set_exploration_type
+from omegaconf import DictConfig, OmegaConf
+import hydra
+from hydra.core.global_hydra import GlobalHydra
+from hydra import initialize, compose
+import speech_recognition as sr
+
+from sentence_transformers import SentenceTransformer
+
+from tensordict import TensorDict
+from benchmarl.utils import DEVICE_TYPING
+from vmas.simulator.utils import TorchUtils
+
+from sequence_models.four_flags.model_training.rnn_model import EventRNN
+from scenarios.four_flags.load_config import load_scenario_config
+
+# ROS2
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String, UInt8
+
+USING_FREYJA = True;
+CREATE_MAP_FRAME = False;
+
+sys.path.insert(0, "/path/to/robomaster_ws/install/freyja_msgs/lib/python3.10/site-packages")
+from freyja_msgs.msg import ReferenceState
+from freyja_msgs.msg import CurrentState
+from freyja_msgs.msg import NicolasMsg
+from freyja_msgs.msg import WaypointTarget
+
+
+# Local Modules
+from trainers.benchmarl_setup_experiment import benchmarl_setup_experiment
+
+def convert_ne_to_xy(north: float, east: float) -> tuple[float, float]:
+    """
+    Convert coordinates from north–east (NE) ordering to x–y ordering.
+    Here, x corresponds to east and y corresponds to north.
+    """
+    return east, north
+
+
+def convert_xy_to_ne(x: float, y: float) -> tuple[float, float]:
+    """
+    Convert coordinates from x–y ordering to north–east (NE) ordering.
+    Here, north corresponds to y and east corresponds to x.
+    """
+    return y, x
+
+X = 0
+Y = 1
+
+class State:
+    def __init__(self, pos, vel, rot, device):
+        self.device = device
+        self.pos = torch.tensor(pos, dtype=torch.float32, device=self.device).unsqueeze(0)
+        self.vel = torch.tensor(vel, dtype=torch.float32, device=self.device).unsqueeze(0)
+        self.rot = torch.tensor(rot, dtype=torch.float32, device=self.device).unsqueeze(0)
+
+class Agent:
+    def __init__(
+    self,
+    node,
+    robot_id: int,
+    count: int,
+    deployment_config,
+    device: DEVICE_TYPING):
+        
+        self.timer: Optional[rclpy.timer.Timer] = None
+        
+        self.goal = None
+        #self._scale = torch.tensor([node.x_semidim, node.y_semidim], device=device)
+        self._scale = torch.tensor([1, 1], device=device)
+        
+        self.node = node
+        self.robot_id = robot_id
+        self.count = count
+    
+        # Timer to update state
+        self.obs_dt = deployment_config.obs_dt
+        self.mytime = 0.0
+        
+        # State buffer
+        self.state_buffer = []
+        self.state_buffer_length = 5
+        
+        self.a_range = deployment_config.a_range
+        self.v_range = deployment_config.v_range
+        self.device = device
+        self.state_received = False
+        if CREATE_MAP_FRAME:
+            self.home_pn = None;
+            self.home_pe = None;
+        else:
+            self.home_pn = 0.0;
+            self.home_pe = 0.0;
+
+        # State variables updated by current_state_callback
+        self.state = State(
+            pos=[0.0, 0.0],
+            vel=[0.0, 0.0],
+            rot=[0.0],
+            device=self.device
+        )
+        
+        self.set_goal()
+        
+        self.h = torch.zeros((self.node.embedding_size,), dtype=torch.float32, device=self.device)
+        self.e = torch.zeros((self.node.event_dim,), dtype=torch.float32, device=self.device)
+        self.flags_found = torch.zeros((4,), dtype=torch.bool, device=self.device)
+        self.hit_switch = torch.zeros((1,), dtype=torch.bool, device=self.device)
+        self.task_state = torch.zeros((1,), dtype=torch.float32, device=self.device)
+        self.switch_color = None
+        self.switch_color_init = False
+        self._prepare_obs_layout()
+
+        # Get topic prefix from config or use default
+        topic_prefix = getattr(deployment_config, "topic_prefix", "/robomaster_")
+        
+        # Create publisher for the robot
+        if USING_FREYJA:
+            self.pub = self.node.create_publisher(
+                ReferenceState,
+                f"{topic_prefix}{self.robot_id}/reference_state",
+                1
+            )
+
+            self.log_pub = self.node.create_publisher(
+                NicolasMsg,
+                f"{topic_prefix}{self.robot_id}/mission_log"
+            )
+
+        # Create subscription with more descriptive variable name
+        if USING_FREYJA:
+            self.state_subscription = self.node.create_subscription(
+                CurrentState,
+                f"{topic_prefix}{self.robot_id}/current_state",
+                self.freyja_current_state_callback,
+                1
+            )
+        
+        # Log the subscription
+        self.node.get_logger().info(f"Robot {self.robot_id} subscribing to: {topic_prefix}{self.robot_id}/current_state")
+    
+        # Create reference state message
+        if USING_FREYJA:
+            self.reference_state = ReferenceState()
+            self.mission_log = NicolasMsg()
+    
+    def set_goal(self):
+
+        y_min = -self.node.y_semidim + self.node.agent_radius + self.node.flag_radius
+        y_max = self.node.y_semidim - self.node.agent_radius - self.node.flag_radius
+        x_min = self.node.x_semidim - self.node.chamber_width + self.node.agent_radius + self.node.flag_radius + self.node.passage_length / 2
+        x_max = self.node.x_semidim - self.node.agent_radius - self.node.flag_radius
+        x_center = (x_min + x_max) / 2
+        n_agent = self.node.n_agents
+        ratio = 0.0 if n_agent <= 1 else self.count / (n_agent - 1)
+        y = y_min + ratio * (y_max - y_min)
+        x = x_center
+        self.goal = torch.tensor([[x, y]], dtype=torch.float32, device=self.device)
+
+    def _prepare_obs_layout(self):
+
+        # 2 coords per relative vector
+        self._obs_dim = 2*(1 + 1 + 4) +  self.node.event_dim # passages + goal + switch + 4 flags
+        # slice index helpers
+        i = 0
+        self._sl_goal     = slice(i, i + 2);   i += 2
+        self._sl_switch   = slice(i, i + 2);   i += 2
+        self._sl_flags    = slice(i, i + 8);   i += 8
+        self._sl_events   = slice(i, i + self.node.event_dim); i += self.node.event_dim
+
+    def freyja_current_state_callback(self, msg: CurrentState):
+        # Extract current state values from the state vector
+        current_pos_n = msg.state_vector[0]
+        current_pos_e = msg.state_vector[1]
+        current_rot = msg.state_vector[5]
+        current_vel_n = msg.state_vector[3]
+        current_vel_e = msg.state_vector[4]
+        
+        self.state.pos[0,X], self.state.pos[0,Y] = convert_ne_to_xy(current_pos_n, current_pos_e)
+        self.state.vel[0,X], self.state.vel[0,Y] = convert_ne_to_xy(current_vel_n, current_vel_e)
+        self.state.rot[0] = current_rot
+        
+        self.state_received = True
+    
+    def landmark_reached(self, landmark_type: str, landmark_id: int):
+        if landmark_type == "flag":
+            self.flags_found[landmark_id] = True
+        elif landmark_type == "switch":
+            if self.flags_found[self.switch_color]:
+                self.hit_switch[0] = True
+    
+    def landmark_overlap(self):
+        for i, flag_pos in enumerate(self.node.flags):
+            distance = torch.norm(self.state.pos - flag_pos.unsqueeze(0)).item()
+            if distance < self.node.flag_radius:
+                self.landmark_reached("flag", i)
+                self.node.get_logger().info(f"Robot {self.robot_id} reached flag {i} at position {flag_pos.cpu().numpy()}")
+
+        distance_to_switch = torch.norm(self.state.pos - self.node.switch.unsqueeze(0)).item()
+        if distance_to_switch < self.node.switch_radius:
+            self.landmark_reached("switch", 0)
+            self.node.get_logger().info(f"Robot {self.robot_id} reached the switch at position {self.node.switch.cpu().numpy()}")
+            
+    def compute_shared_event(self) -> torch.Tensor:
+        """
+        Aggregate all agents' binary event vectors via OR.
+        Returns a float32 tensor of shape (event_dim,) on self.device.
+        """
+        if not self.node.world.agents:
+            return torch.zeros((self.node.event_dim,), device=self.device, dtype=torch.float32)
+
+        # start from all-zeros bool
+        agg = torch.zeros((self.node.event_dim,), device=self.device, dtype=torch.bool)
+        for ag in self.node.world.agents:
+            # ag.e is float [0/1]; threshold to bool then OR
+            ag_e = torch.cat([ag.flags_found.to(torch.float32), ag.hit_switch.to(torch.float32)], dim=-1)
+            ev_bool = (ag_e.to(torch.bool))
+            # handle potential length mismatches defensively
+            if ev_bool.numel() != agg.numel():
+                self.get_logger().warn(
+                    f"Event length mismatch for agent {ag.robot_id}: {ev_bool.numel()} vs {agg.numel()}")
+                m = min(ev_bool.numel(), agg.numel())
+                agg[:m] |= ev_bool[:m]
+            else:
+                agg |= ev_bool
+
+        return agg.to(torch.float32)
+
+
+    def next_step_rnn(self):
+        # use shared events if available
+        shared_e = getattr(self.node, "compute_shared_event", None)
+        if shared_e:
+            e_vec = self.compute_shared_event()
+            # also keep local flags so agents can still set them
+            self.e = e_vec
+        else:
+            self.e = torch.cat([self.flags_found.to(torch.float32),
+                                self.hit_switch.to(torch.float32)], dim=-1)
+
+        if getattr(self.node, "y", None) is None:
+            return
+        self.h, state_decoder_out = self.node.compute_forward_rnn(
+            event=self.e,
+            y=self.node.y,
+            h=self.h
+        )
+        self.task_state = torch.argmax(
+            torch.sigmoid(state_decoder_out[self.node.num_automata_bits:]), dim=-1
+        )
+        if not self.switch_color_init:
+            bits = (torch.sigmoid(state_decoder_out[:self.node.num_automata_bits]) > 0.5)
+            weights = (2 ** torch.arange(self.node.num_automata_bits - 1, -1, -1, device=self.node.device)).to(torch.int)
+            flag_idx = (bits * weights).sum(dim=0).to(torch.int) 
+            self.switch_color = flag_idx.item()
+            self.switch_color_init = True
+        
+    def log_mission_info(self):
+
+        self.mission_log.pos = self.state.pos[0].tolist()
+        self.mission_log.step = self.node.step_count
+        self.mission_log.hit_switch = self.hit_switch.to(dtype=torch.int).item()
+        self.mission_log.flags = self.flags_found.to(dtype=torch.int).tolist()
+        self.mission_log.automaton_state = self.task_state.to(dtype=torch.int).tolist()
+        self.mission_log.agent_id = int(self.count)
+        self.mission_log.automaton_id = int(self.switch_color)
+
+        self.log_pub.publish(self.mission_log)
+
+    def collect_observation(self):
+        
+        if self.goal is None or not self.state_received:
+            return
+        
+        self.landmark_overlap()
+        self.next_step_rnn()
+        self.log_mission_info()
+            
+        obs_buf = torch.empty(self._obs_dim, device=self.device, dtype=torch.float32)
+
+        # goal and switch relative vectors (1×2 -> 2)
+        rel_goal   = ((self.goal[0] - self.state.pos[0])   / self._scale).to(torch.float32)
+        rel_switch = ((self.node.switch - self.state.pos[0]) / self._scale).to(torch.float32)
+        obs_buf[self._sl_goal]   = rel_goal
+        obs_buf[self._sl_switch] = rel_switch
+
+        # flags: (4,2) -> flatten to (8,)
+        flags_pos = torch.stack(list(self.node.flags), dim=0)  # (4,2)
+        rel_flags = ((flags_pos - self.state.pos[0]) / self._scale).to(torch.float32).reshape(-1)
+        obs_buf[self._sl_flags] = rel_flags  # (8,)
+
+        # events
+        obs_buf[self._sl_events] = self.e.to(torch.float32)
+
+        obs = {
+            "pos": (self.state.pos[0] / self._scale).to(torch.float32),   # (2,)
+            "vel": (self.state.vel[0] / self._scale).to(torch.float32),   # (2,)
+            "event": self.e.to(torch.float32),                             # (5,)
+            "sentence_embedding": self.h.to(torch.float32),                # (E,)
+            "obs": obs_buf,                                               # (12,)
+        }
+
+        self.state_buffer.append(obs)
+        if len(self.state_buffer) > self.state_buffer_length:
+            self.state_buffer = self.state_buffer[-self.state_buffer_length:]
+       
+        
+    def send_zero_velocity(self):
+        # Send a zero velocity command
+        if USING_FREYJA:
+            self.reference_state.vn = 0.0
+            self.reference_state.ve = 0.0
+            self.reference_state.header.stamp = self.node.get_clock().now().to_msg()
+        else:
+            self.reference_state.linear.x = 0.0
+            self.reference_state.angular.z = 0.0
+
+        self.node.get_logger().info(f"Robot {self.robot_id} - Zero velocity command sent.")
+        self.pub.publish(self.reference_state)
+        self.node.log_file.flush()
+    
+    def reset(self):
+        """
+        Reset the agent to its initial state for a new episode.
+        Clears buffers, resets state variables, and reinitializes goals.
+        """
+        # Stop any running timer
+        if self.timer is not None:
+            self.timer.cancel()
+            self.timer = None
+
+        # Reset goal and recompute
+        self.goal = None
+        self.set_goal()
+
+        # Reset simulation time
+        self.mytime = 0.0
+
+        # Clear state buffer
+        self.state_buffer = []
+        self.state_received = False
+
+        # Reset state
+        self.state = State(
+            pos=[0.0, 0.0],
+            vel=[0.0, 0.0],
+            rot=[0.0],
+            device=self.device
+        )
+
+        # Reset RNN hidden and event vectors
+        self.h = torch.zeros((self.node.embedding_size,), dtype=torch.float32, device=self.device)
+        self.e = torch.zeros((self.node.event_dim,), dtype=torch.float32, device=self.device)
+
+        # Reset landmarks, task state
+        self.flags_found = torch.zeros((4,), dtype=torch.bool, device=self.device)
+        self.hit_switch  = torch.zeros((1,), dtype=torch.bool, device=self.device)
+        self.task_state  = torch.zeros((1,), dtype=torch.float32, device=self.device)
+        self.switch_color = None
+        self.switch_color_init = False
+
+        self.node.get_logger().info(f"Robot {self.robot_id} has been reset.")
+
+    
+class World:
+    def __init__(self, agents: List[Agent], dt: float):
+        self.agents = agents
+        self.dt = dt
+
+class VmasModelsROSInterface(Node):
+    def __init__(self, config: DictConfig, log_dir: Path, config_team_gnn: Optional[DictConfig]=None):
+        super().__init__("vmas_ros_interface")
+        self.device = config.device
+        arena_config = config["arena_config"]
+        deployment_config = config["deployment"]
+        experiment_name = list(config.keys())[0]
+        task_config = config[experiment_name].task.params
+        
+        self.llm = SentenceTransformer(deployment_config.llm_model, device="cpu")
+        
+        load_scenario_config(task_config,self)
+        required = ["flag_radius","switch_radius","agent_radius","passage_length","chamber_width",
+            "n_agents","sequence_model_path","embedding_size","event_dim","state_dim",
+            "policy_config_path","policy_config_name","policy_restore_path","num_automata_bits"]
+        for k in required:
+            assert hasattr(self, k), f"Missing config attribute: {k}"
+        
+        # Override environment dimensions
+        self.x_semidim = arena_config.x_semidim
+        self.y_semidim = arena_config.y_semidim
+        self.task_x_semidim = task_config.x_semidim
+        self.task_y_semidim = task_config.y_semidim
+
+        # Load Action Policy
+        cfg, seed = generate_cfg(config_path=self.policy_config_path, config_name=self.policy_config_name, restore_path=self.policy_restore_path, device=self.device)
+        self.policy = get_policy_from_cfg(cfg, seed)
+        
+        # experiment_team_gnn = benchmarl_setup_experiment(cfg=config_team_gnn)
+        # self.team_gnn_policy = experiment_team_gnn.policy
+        
+        # Load sequence model
+        self.load_sequence_model(
+            model_path=self.sequence_model_path,
+            embedding_size=self.embedding_size,
+            event_size=self.event_dim,
+            state_size=self.state_dim,
+            device=self.device
+        )
+        
+        self.set_landmarks()
+        
+        self.log_dir = log_dir
+        (self.log_dir / "logs").mkdir(parents=True, exist_ok=True)
+        self.log_file = open(self.log_dir / f"control_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", "w", newline="")
+        self.csv_writer = csv.writer(self.log_file)
+        self.csv_writer.writerow(["sim_time","wall_time","robot_id","cmd_vel_xy","cmd_omega","vel_n","vel_e","pos_x","pos_y","vel_x","vel_y"])
+
+        # Create Agents
+        agents: List[Agent] = []
+        id_list = deployment_config.id_list
+        assert len(id_list) == self.n_agents
+        for i in range(self.n_agents):
+            agent = Agent(
+                node=self,
+                robot_id=id_list[i],
+                count = i,
+                deployment_config = deployment_config,
+                device=self.device
+            )
+            agents.append(agent)
+        
+        # Create action loop
+        self.action_dt = deployment_config.action_dt
+        self.max_steps = deployment_config.max_steps
+        self.step_count = 0
+        self.world = World(agents,self.action_dt)
+        self.no_obs = True
+        
+        self.get_logger().info("ROS2 starting ..")
+    
+    def set_landmarks(self):
+        """Set the landmarks for the scenario."""
+        self.flags = []
+        
+        self.x_room_max = (self.x_semidim - self.chamber_width - self.agent_radius - self.passage_length / 2)
+        self.x_room_min = (-self.x_semidim + self.agent_radius)
+        x_room_center = (self.x_room_max + self.x_room_min) / 2
+        y_room_center = 0
+        self.room_center = torch.tensor([x_room_center, y_room_center], dtype=torch.float32, device=self.device)
+        self.switch = self.room_center.clone()
+        
+        # Set flag positions
+        indices = [0,1,2,3] # Red, Green, Blue, Purple
+        for i in indices:
+            xx = self.x_room_min + self.flag_radius + (i % 2) * (self.x_room_max - self.x_room_min - 2 * self.flag_radius)
+            yy = -self.y_semidim + self.flag_radius + (i // 2) * (2 * self.y_semidim - 2 * self.flag_radius)
+            flag = torch.zeros((2,), dtype=torch.float32, device=self.device)
+            flag[0] = xx
+            flag[1] = yy
+            self.flags.append(flag)
+            print(f"Flag {i} position: {flag}")
+        
+        # Wall center
+        self.wall_center = torch.tensor([self.x_semidim - self.chamber_width, 0.0], dtype=torch.float32, device=self.device)
+    
+    def compute_forward_rnn(self, event: torch.Tensor, y: torch.Tensor, h: torch.Tensor):
+        """
+        Compute the next state of the RNN for the given environments.
+        """
+        next_h, state_decoder_out = self.sequence_model._forward(e=event, y=y, h=h)
+
+        return next_h, state_decoder_out
+
+    def load_sequence_model(self, model_path, embedding_size, event_size, state_size, device):
+        """ Load the sequence model from a given path."""
+        self.sequence_model = EventRNN(event_dim=event_size, y_dim=embedding_size, latent_dim=embedding_size, input_dim=64, state_dim=state_size, decoder=None)
+        self.sequence_model.load_state_dict(torch.load(model_path, map_location=device))
+        self.sequence_model.eval()
+
+    def timer_callback(self):
+        if not self._all_states_received():
+            self.get_logger().info("Waiting for all agents to receive state.")
+            return
+
+        if self._reached_max_steps():
+            self._handle_termination()
+            return
+
+        obs_dict = self._collect_observations()
+
+        if obs_dict is None or self.no_obs:
+            self.get_logger().warn("No valid observations collected. Skipping this timestep.")
+            return
+
+        with torch.no_grad(), set_exploration_type(ExplorationType.DETERMINISTIC):
+            output_td = self.policy(obs_dict)
+        action = output_td[("agents", "action")].squeeze(0)
+
+        self._issue_commands_to_agents(action)
+        self.step_count += 1
+
+    def _all_states_received(self):
+        return all(agent.state_received for agent in self.world.agents)
+
+    def _reached_max_steps(self):
+        return self.step_count >= self.max_steps
+
+    def _handle_termination(self):
+        self.get_logger().info(f"Robots reached {self.max_steps} steps. Stopping.")
+        self.timer.cancel()
+        self.stop_all_agents()
+        self.prompt_for_new_task_instruction()
+
+    def _collect_observations(self):
+        """Return a list of per-agent TensorDict observations (no concatenation)."""
+        data_dict = {} 
+        for ag in self.world.agents:
+            if not ag.state_buffer:
+                self.get_logger().warn(f"No state in buffer for agent {ag.robot_id}")
+                self.no_obs = True
+                continue
+            s = ag.state_buffer[-1]
+
+            for key, value in s.items():
+                data_dict.setdefault(key, []).append(value.unsqueeze(0).float())
+
+        obs_dict = {
+            ("agents", "observation", key): torch.cat(tensor_list, dim=0).unsqueeze(0)
+            for key, tensor_list in data_dict.items()
+        }
+
+        self.no_obs = False
+
+        return TensorDict(obs_dict)
+
+    def _prepare_input_tensor(self, obs_list):
+        obs_tensor = torch.cat(obs_list, dim=0)  # (N,D)
+        return TensorDict({("agents","observation"): obs_tensor}, batch_size=[obs_tensor.shape[0]])
+    
+    def clamp_velocity_to_bounds(self, action: torch.Tensor, agent) -> List[float]:
+        """
+        Clamp the velocity so the agent remains within the environment bounds,
+        accounting for the agent's radius and timestep.
+        """
+        pos = agent.state.pos[0]  # shape: (2,)
+        theta = agent.state.rot[0]  # shape: (1,)
+        vel = action.clone()
+        
+        if self.use_kinematic_model:
+            vel_norm = action[X]
+            omega    = action[Y]
+            vel[X]   = vel_norm * torch.cos(theta)
+            vel[Y]   = vel_norm * torch.sin(theta)
+        else:
+            omega = None
+        
+        # Scale Action to deployment environment
+        vel[X] = vel[X] * self.x_semidim / self.task_x_semidim
+        vel[Y] = vel[Y] * self.y_semidim / self.task_y_semidim
+
+        bounds_min = torch.tensor(
+            [-self.x_semidim + self.agent_radius, -self.y_semidim + self.agent_radius],
+            device=self.device, dtype=torch.float,
+        )
+        bounds_max = torch.tensor(
+            [ self.x_semidim - self.agent_radius,  self.y_semidim - self.agent_radius],
+            device=self.device, dtype=torch.float,
+        )
+        next_pos = pos + vel * self.action_dt
+
+        # Compute clamped velocity based on how far the agent can move without crossing bounds
+        below_min = next_pos < bounds_min
+        above_max = next_pos > bounds_max
+
+        # Adjust velocity where next position would violate bounds
+        vel[below_min] = (bounds_min[below_min] - pos[below_min]) / self.action_dt
+        vel[above_max] = (bounds_max[above_max] - pos[above_max]) / self.action_dt
+
+        # Clamp to the agent's max velocity norm
+        clamped_vel = TorchUtils.clamp_with_norm(vel, agent.v_range)
+        return clamped_vel.tolist(), None if omega is None else omega.item()
+
+    def _wrap_to_pi(self, angle: float) -> float:
+        """Return the equivalent angle in the range [-π, π)."""
+        return (angle + math.pi) % (2 * math.pi) - math.pi
+
+    def _issue_commands_to_agents(self, action_tensor):
+        real_time_str = datetime.now().isoformat()
+
+        for i, agent in enumerate(self.world.agents):
+
+            cmd_vel, cmd_omega = self.clamp_velocity_to_bounds(action_tensor[i], agent)
+            vel_n, vel_e = convert_xy_to_ne(*cmd_vel)
+
+            if self.use_kinematic_model:
+                yaw_now = agent.state.rot.item()          # current estimate
+                yaw_ref = self._wrap_to_pi(yaw_now + cmd_omega * self.action_dt)
+            else:
+                yaw_ref   = math.pi / 2                   # legacy fixed heading
+                cmd_omega = 0.0
+
+            if USING_FREYJA:
+                agent.reference_state.vn = vel_n
+                agent.reference_state.ve = vel_e
+                agent.reference_state.yaw = yaw_ref
+                agent.reference_state.an = agent.a_range
+                agent.reference_state.ae = agent.a_range
+                agent.reference_state.header.stamp = self.get_clock().now().to_msg()
+            else:
+                agent.reference_state.linear.x = math.sqrt(vel_n**2 + vel_e**2);
+                agent.reference_state.angular.z = cmd_omega;
+
+            self.get_logger().info(
+                f"Robot {agent.robot_id} - Commanded velocity ne: {vel_n}, {vel_e} - "
+                f"Commanded yaw rate: {cmd_omega}"
+                f"pos: [{agent.state.pos[0,X]}, {agent.state.pos[0,Y]}] - "
+                f"yaw: [{agent.state.rot[0]}] - "
+                f"vel: [{agent.state.vel[0,X]}, {agent.state.vel[0,Y]}]"
+                f"event: [{agent.e.tolist()}]"
+                f"task state: [{agent.task_state.item()}]"
+            )
+
+            self.csv_writer.writerow([
+                float(agent.mytime), real_time_str, int(agent.robot_id),
+                [float(cmd_vel[0]), float(cmd_vel[1])], float(cmd_omega), float(vel_n), float(vel_e),
+                float(agent.state.pos[0,X].item()), float(agent.state.pos[0,Y].item()),
+                float(agent.state.vel[0,X].item()), float(agent.state.vel[0,Y].item())
+            ])
+            self.log_file.flush()
+
+            agent.pub.publish(agent.reference_state)
+            agent.mytime += self.action_dt
+
+    def stop_all_agents(self):
+        if getattr(self, "timer", None): self.timer.cancel()
+        for agent in self.world.agents:
+            if agent.timer is not None:
+                agent.timer.cancel()
+            agent.state_buffer.clear()
+            agent.send_zero_velocity()
+    
+    def _parse_goal_from_input(self, txt: str) -> torch.Tensor:
+        """
+        Expected formats:
+        •  "3.0 -2.5"
+        •  "3.0, -2.5"
+        Returns a (1, 2) float32 tensor on the correct device.
+        """
+        # replace comma with space, split, take first two items
+        try:
+            n_str, e_str = txt.replace(",", " ").split()[:2]
+            goal = torch.tensor([[float(n_str), float(e_str)]],
+                                dtype=torch.float32,
+                                device=self.device)
+            return goal
+        except Exception:
+            raise ValueError(
+                "Invalid goal format. Please enter two numbers, e.g. '1.2 -0.8'"
+            )
+
+    def prompt_for_new_task_instruction(self):
+
+        new_sentence = input("Enter a new instruction for the agents: ")
+        try:
+            embedding = torch.tensor(self.llm.encode([new_sentence]), device=self.device).squeeze(0)
+        except Exception as e:
+            self.get_logger().error(f"Failed to encode instruction: {e}")
+            return
+        self.y = embedding
+
+        # Reset step count and timers
+        self.step_count = 0
+        self.timer = self.create_timer(self.action_dt, self.timer_callback)
+        for agent in self.world.agents:
+            if agent.timer: agent.timer.cancel(); agent.timer = None
+            agent.mytime = 0
+            agent.timer = self.create_timer(agent.obs_dt, agent.collect_observation)
+        self.get_logger().info("Starting agents with new instruction.")
+
+    def prompt_for_new_speech_task_instruction(self):
+
+        recognizer = sr.Recognizer()
+        mic = sr.Microphone()
+
+        self.get_logger().info("Listening for new instruction... (or press Enter to type instead)")
+
+        try:
+            with mic as source:
+                recognizer.adjust_for_ambient_noise(source)
+                audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
+                print(f"\n Audio recieved, sending to Google Speech API""\n")
+            new_sentence = recognizer.recognize_google(audio)
+            print(f"\n[Speech Recognized] \"{new_sentence}\"\n")
+            self.get_logger().info(f"Received spoken instruction: {new_sentence}")
+        except (sr.WaitTimeoutError, sr.UnknownValueError, sr.RequestError) as e:
+            self.get_logger().warn(f"Speech recognition failed: {e}")
+            user_input = input("Speech recognition failed. Type instruction or press Enter to try again: ").strip()
+            if user_input:
+                new_sentence = user_input
+            else:
+                self.get_logger().info("Retrying speech recognition...")
+                return self.prompt_for_new_task_instruction()
+        except Exception as e:
+            self.get_logger().error(f"Unexpected error during speech recognition: {e}")
+            return
+
+        try:
+            embedding = torch.tensor(self.llm.encode([new_sentence]), device=self.device).squeeze(0)
+        except Exception as e:
+            self.get_logger().error(f"Failed to encode instruction: {e}")
+            return
+
+        self.y = embedding
+
+        # Reset step count and timers
+        self.step_count = 0
+        self.timer = self.create_timer(self.action_dt, self.timer_callback)
+        for agent in self.world.agents:
+            agent.mytime = 0
+            agent.reset()
+            if agent.timer: agent.timer.cancel(); agent.timer = None
+            agent.timer = self.create_timer(agent.obs_dt, agent.collect_observation)
+        self.get_logger().info("Starting agents with new instruction.")
+
+def get_runtime_log_dir():
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    runtime_dir = Path(hydra.core.hydra_config.HydraConfig.get().runtime.output_dir)
+    log_dir = runtime_dir / f"run_{timestamp}"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    return log_dir
+
+# Manually parse config_path and config_name from CLI
+def extract_initial_config():
+    config_path, config_name = None, None
+    for arg in sys.argv:
+        if arg.startswith("config_path="):
+            config_path = arg.split("=", 1)[1]
+        elif arg.startswith("config_name="):
+            config_name = arg.split("=", 1)[1]
+    return config_path, config_name
+
+import copy
+def get_policy_from_cfg(cfg: DictConfig, seed: int):
+    experiment = benchmarl_setup_experiment(cfg, seed=seed, main_experiment=False)
+    policy_copy = copy.deepcopy(experiment.policy)  # full independent copy
+    del experiment  # drop the rest
+    return policy_copy
+
+import os
+def generate_cfg(overrides: list[str] = None, config_path: str = "../conf", config_name: str = "conf", restore_path: str = None, device: str = "cpu") -> DictConfig:
+    overrides = overrides or []  # e.g., ["restore_path=some_path"]
+    # current working directory
+    print(f"Current working directory: {os.getcwd()}")
+    # Add directory to restore_path if it is not None
+    restore_path = os.path.join(os.getcwd(), restore_path) if restore_path else None
+    GlobalHydra.instance().clear()
+    with initialize(version_base=None, config_path=config_path):
+        cfg = compose(config_name=config_name, overrides=overrides)
+    experiment_name = list(cfg.keys())[0]
+    seed = cfg.seed
+    cfg[experiment_name].experiment.restore_file = restore_path
+    cfg[experiment_name].experiment.restore_map_location = device
+    cfg = cfg[experiment_name]  # Get the config for the specific experiment
+    return cfg, seed
+
+
+# Run script with:
+# python deployment/debug/debug_policy/navigation_deployment.py restore_path=/path_to_checkpoint.pt
+@hydra.main(version_base=None,config_path="../../conf",config_name="four_flags/deployment/four_flags_deployment")
+def main(cfg: DictConfig) -> None:
+    print(OmegaConf.to_yaml(cfg, resolve=True))   # full merged config
+    rclpy.init()
+    experiment_name = list(cfg.keys())[0]
+
+    cfg[experiment_name].experiment.restore_file = cfg[experiment_name].task.params.policy_restore_path
+
+    log_dir = get_runtime_log_dir()
+
+    # Instantiate interface
+    ros_interface_node = VmasModelsROSInterface(
+        config=cfg,
+        log_dir=log_dir
+    )
+
+    ros_interface_node.prompt_for_new_task_instruction()
+    
+    def sigint_handler(sig, frame):
+        ros_interface_node.get_logger().info('SIGINT received. Stopping timer and sending zero velocity...')
+        ros_interface_node.stop_all_agents()
+        rclpy.spin_once(ros_interface_node, timeout_sec=0.5)
+        ros_interface_node.destroy_node()
+        ros_interface_node.log_file.close()
+        rclpy.shutdown()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sigint_handler)
+    rclpy.spin(ros_interface_node)
+
+
+if __name__ == '__main__':
+    main()

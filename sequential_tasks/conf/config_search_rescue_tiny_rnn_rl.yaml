@@ -1,0 +1,3 @@
+defaults:
+  - _self_
+  - /search_rescue/training/search_rescue_tiny_rnn_rl.yaml

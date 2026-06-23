@@ -1,0 +1,4 @@
+# Packages are placed here by ../setup_workspace.sh:
+#   language_driven_exploration  (symlink to ../../language_driven_exploration)
+#   Freyja                       (cloned: github.com/unl-nimbus-lab/Freyja)
+#   ros2_robomaster_msgs         (cloned: github.com/proroklab/ros2_robomaster_msgs)

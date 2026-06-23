@@ -1,0 +1,22 @@
+actor_model:
+  _target_: trainers.models.team_event_gnn.MyModelConfig
+  topology: from_pos
+  edge_radius: ${..model_shared.comms_radius}
+  self_loops: false
+  gnn_class: torch_geometric.nn.conv.GATv2Conv
+  gnn_kwargs:
+    add_self_loops: true
+    residual: true
+
+  position_key: pos
+  pos_features: 2
+  velocity_key: vel
+  vel_features: 2
+  exclude_pos_from_node_features: false
+  event_dim: ${search_rescue.task.params.event_dim}
+
+  num_cells: [256, 256]
+  layer_class: torch.nn.Linear
+  activation_class: torch.nn.ReLU
+
+  use_gnn: true

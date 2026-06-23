@@ -1,0 +1,7 @@
+type: mappo
+params:
+  # Bumped 0.05 → 0.1 after the variant-conditional run plateau'd at "always
+  # red-first" (works for 3/4 variants but fails on b_first). Entropy still
+  # collapsed to -0.5 by iter 200; need more sustained exploration to give
+  # the policy time to learn variant-specific strategies before locking in.
+  entropy_coef: 0.1
