@@ -48,11 +48,8 @@ prompting-robot-teams/
 │   ├── conf/                    # Hydra configs (task / model / algorithm / training)
 │   ├── sentences/               # LLM-generated natural-language instruction datasets
 │   └── utils/
-├── language_driven_exploration/ # Single-stage language-driven exploration variant + ROS 2 node
-│   ├── trainer/  scenarios/  evaluations/  sentence_embeddings/  conf/
-│   └── deployment/              # ROS 2 deployment node (my_deployment.py)
 ├── robomaster_ws/               # Thin ROS 2 (colcon) workspace for the real-robot deployment
-│   ├── setup_workspace.sh       # Links the package above + clones Freyja & robomaster_msgs
+│   ├── setup_workspace.sh       # Clones the third-party stacks (Freyja & robomaster_msgs)
 │   └── record_mission.sh
 ├── requirements.txt
 ├── LICENSE                      # MIT
@@ -62,7 +59,8 @@ prompting-robot-teams/
 The four tasks studied in the paper live under `sequential_tasks/{sequence_models,scenarios,conf}`:
 **four_rooms** (Sec. V-B ablation), **four_flags**, **hit_the_switch**, and **search_rescue**
 (Sec. V-C search-and-rescue with branching/parallel DFAs). The retrieve-the-flag deployment
-(Sec. V-D) is run through `robomaster_ws` / `language_driven_exploration`.
+(Sec. V-D) is the ROS 2 node `sequential_tasks/scenarios/four_flags/four_flags_deployment.py`,
+run on top of the `robomaster_ws` workspace.
 
 ---
 
@@ -136,17 +134,20 @@ reference.
 
 The retrieve-the-flag deployment runs on DJI RoboMaster EP robots (ROS 2 Humble, onboard
 Nvidia Jetson Orin) with motion-capture positioning, on top of the
-[Freyja](https://github.com/unl-nimbus-lab/Freyja) flight-control stack.
+[Freyja](https://github.com/unl-nimbus-lab/Freyja) flight-control stack. The deployment node
+loads the distilled `EventRNN` automaton and the team GNN policy, prompts for a natural-language
+instruction, and drives the team via Freyja.
 
 ```bash
 cd robomaster_ws
-./setup_workspace.sh    # links language_driven_exploration + clones Freyja & robomaster_msgs
+./setup_workspace.sh    # clones Freyja & ros2_robomaster_msgs into src/
 colcon build --symlink-install --cmake-args -DNO_PIXHAWK=True
 source install/setup.bash
 
-# Launch the low-level controller, then the policy node:
+# Low-level controller (one per robot frame), then the deployment node:
 ros2 launch src/Freyja/freyja_robomaster.launch.yaml tf_myframe:=robomaster_2
-python src/language_driven_exploration/deployment/my_deployment.py
+cd ../sequential_tasks
+PYTHONPATH=. python scenarios/four_flags/four_flags_deployment.py   # Hydra; set the checkpoint path
 ```
 
 See `robomaster_ws/README.md` for details. Third-party packages (Freyja — GPLv3 — and

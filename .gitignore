@@ -49,7 +49,6 @@ robomaster_ws/log/
 # Third-party / linked packages added by setup_workspace.sh
 robomaster_ws/src/Freyja/
 robomaster_ws/src/ros2_robomaster_msgs/
-robomaster_ws/src/language_driven_exploration
 
 # ---- OS / editor ----
 .DS_Store

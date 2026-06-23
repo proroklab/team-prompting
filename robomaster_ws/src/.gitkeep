@@ -1,4 +1,6 @@
-# Packages are placed here by ../setup_workspace.sh:
-#   language_driven_exploration  (symlink to ../../language_driven_exploration)
-#   Freyja                       (cloned: github.com/unl-nimbus-lab/Freyja)
-#   ros2_robomaster_msgs         (cloned: github.com/proroklab/ros2_robomaster_msgs)
+# Third-party packages are cloned here by ../setup_workspace.sh:
+#   Freyja                (github.com/unl-nimbus-lab/Freyja, ros2-devel)
+#   ros2_robomaster_msgs  (github.com/proroklab/ros2_robomaster_msgs)
+# The deployment node itself lives in ../../sequential_tasks
+# (scenarios/four_flags/four_flags_deployment.py) and is launched after sourcing
+# this workspace's install/setup.bash.
